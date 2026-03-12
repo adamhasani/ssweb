@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web Jepret Vercel 📸</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px; background: #f4f4f9; }
+        .container { max-width: 800px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        input { padding: 12px; width: 70%; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+        button { padding: 12px 20px; font-size: 16px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 5px; }
+        button:hover { background: #0056b3; }
+        #loading { color: #ff9900; font-weight: bold; margin-top: 15px; }
+        #result { margin-top: 20px; max-width: 100%; border: 2px solid #ddd; border-radius: 5px; display: none; }
+        #downloadBtn { display: none; margin-top: 15px; padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; text-decoration: none; cursor: pointer; font-weight: bold;}
+        #downloadBtn:hover { background: #218838; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Ambil Screenshot Web Mode Laptop 💻</h2>
+        <input type="url" id="urlInput" placeholder="Masukin link webnya di sini">
+        <button onclick="takeScreenshot()">Jepret!</button>
+        
+        <p id="loading" style="display:none;">Lagi ngejepret, tunggu bentar yak...</p>
+        <br>
+        <img id="result" alt="Hasil Screenshot">
+        <br>
+        <a id="downloadBtn" download="hasil-screenshot.png">Download Hasilnya ⬇️</a>
+    </div>
+
+    <script>
+        async function takeScreenshot() {
+            const url = document.getElementById('urlInput').value;
+            const resultImg = document.getElementById('result');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const loading = document.getElementById('loading');
+
+            if(!url) return alert('Linknya diisi dulu dong!');
+
+            loading.style.display = 'block';
+            resultImg.style.display = 'none';
+            downloadBtn.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/screenshot', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+
+                if (!response.ok) throw new Error('Gagal');
+
+                const data = await response.json();
+                resultImg.src = data.image;
+                resultImg.style.display = 'block';
+                downloadBtn.href = data.image;
+                downloadBtn.style.display = 'inline-block';
+            } catch (err) {
+                alert('Gagal jepret webnya! Servernya mungkin timeout.');
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
