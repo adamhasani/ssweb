@@ -1,0 +1,8 @@
+{
+  "name": "web-screenshot",
+  "version": "1.0.0",
+  "dependencies": {
+    "@sparticuz/chromium": "^121.0.0",
+    "puppeteer-core": "^22.0.0"
+  }
+}
